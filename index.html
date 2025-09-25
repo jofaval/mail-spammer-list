@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <header>
+      <button id="getAddressesButton">Get addresses</button>
+
+      Batch size of
+      <input type="number" name="batchSize" id="batchSize" value="499" />
+      addresses &nbsp;
+
+      <button id="fromTeamReport">From Team report</button>
+    </header>
+
+    <div class="container">
+      <div class="list">
+        <h2>Original</h2>
+
+        <textarea name="original" id="original"></textarea>
+      </div>
+
+      <div class="list">
+        <h2>Ignore</h2>
+
+        <textarea name="ignore" id="ignore"></textarea>
+
+        <br />
+
+        Currently ignoring &nbsp;<span
+          class="ignoring-emails-count"
+          id="ignoring-emails-count"
+          >0</span
+        >
+      </div>
+    </div>
+  </body>
+
+  <script src="main.js"></script>
+</html>

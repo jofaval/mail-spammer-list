@@ -19,6 +19,8 @@ ignoreTextarea.addEventListener("input", (event) => {
 });
 
 function addressesFromText(text) {
+  if (text.trim() === "") return new Set();
+
   return new Set(
     text
       .trim()
@@ -51,17 +53,21 @@ buttonAddresses.addEventListener("click", () => {
   );
 });
 
+function getEmailsWithResponse(report) {
+  return report.attendees
+    .filter((attendee) => {
+      return ["Accepted", "Declined", "Tentative"].includes(
+        attendee.status.response
+      );
+    })
+    .map((attendee) => attendee.address);
+}
+
 const fromTeamReport = document.getElementById("fromTeamReport");
 fromTeamReport.addEventListener("click", () => {
   navigator.clipboard.readText().then((text) => {
     try {
-      const emailsToIgnore = JSON.parse(text)
-        .attendees.filter((attendee) => {
-          return ["Accepted", "Declined", "Tentative"].includes(
-            attendee.status.response
-          );
-        })
-        .map((attendee) => attendee.address);
+      const emailsToIgnore = getEmailsWithResponse(JSON.parse(text));
 
       setIgnoreValue(emailsToIgnore.join("\n"));
     } catch (error) {

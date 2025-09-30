@@ -3,7 +3,7 @@ const ignoreTextarea = document.getElementById("ignore");
 const ignoringEmailsCount = document.getElementById("ignoring-emails-count");
 
 function onIgnoreValueChange(text) {
-  ignoringEmailsCount.innerHTML = text.split("\n").length;
+  ignoringEmailsCount.innerHTML = text?.split("\n").length;
   localStorage.setItem("ignoreAddresses", text);
 }
 

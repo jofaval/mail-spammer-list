@@ -18,6 +18,28 @@ ignoreTextarea.addEventListener("input", (event) => {
   onIgnoreValueChange(event.target.value);
 });
 
+const blacklistTextarea = document.getElementById("blacklist");
+const blacklistEmailsCount = document.getElementById("blacklist-emails-count");
+
+function onBlacklistValueChange(text) {
+  localStorage.setItem("blacklistAddresses", text);
+}
+
+function setBlacklistValue(text) {
+  blacklistTextarea.value = text;
+  onBlacklistValueChange(text);
+}
+
+setBlacklistValue(localStorage.getItem("blacklistAddresses"));
+
+blacklistTextarea.addEventListener("input", (event) => {
+  onBlacklistValueChange(event.target.value);
+});
+
+/**
+ * @param {string} text
+ * @returns {Set<string>}
+ */
 function addressesFromText(text) {
   if (text.trim() === "") return new Set();
 
@@ -34,24 +56,29 @@ const buttonAddresses = document.getElementById("getAddressesButton");
 buttonAddresses.addEventListener("click", () => {
   const original = addressesFromText(originalTextarea.value);
   const ignore = addressesFromText(ignoreTextarea.value);
+  const blacklist = addressesFromText(blacklistTextarea.value);
 
-  const finalAddresses = Array.from(original).filter(
-    (address) => !ignore.has(address)
-  );
-
-  const batchSize = Number(document.getElementById("batchSize").value);
-  const groups = finalAddresses.reduce(() => {
-    const batches = [];
-    for (let i = 0; i < finalAddresses.length; i += batchSize) {
-      batches.push(finalAddresses.slice(i, i + batchSize));
-    }
-    return batches;
-  }, []);
+  const groups = batchify({
+    elements: Array.from(original).filter((address) => {
+      return !(ignore.has(address) || blacklist.has(address));
+    }),
+    size: Number(document.getElementById("batchSize").value),
+  });
 
   navigator.clipboard.writeText(
     groups.map((batch) => batch.join(";")).join("\n")
   );
 });
+
+function batchify({ elements, size }) {
+  return elements.reduce(() => {
+    const batches = [];
+    for (let i = 0; i < elements.length; i += size) {
+      batches.push(elements.slice(i, i + size));
+    }
+    return batches;
+  }, []);
+}
 
 function getEmailsWithResponse(report) {
   return report.attendees

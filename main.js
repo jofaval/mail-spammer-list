@@ -22,6 +22,7 @@ const blacklistTextarea = document.getElementById("blacklist");
 const blacklistEmailsCount = document.getElementById("blacklist-emails-count");
 
 function onBlacklistValueChange(text) {
+  blacklistEmailsCount.innerHTML = text?.split("\n").length;
   localStorage.setItem("blacklistAddresses", text);
 }
 
